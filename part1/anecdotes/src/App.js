@@ -1,4 +1,35 @@
 import React, { useState } from 'react';
+import './App.css';
+
+const Display = ({anecdotes, selected, votes, setVote, addVote, setSelected, generateIndex}) => (
+  <div>
+    <h1>Anecdote of the day</h1>
+    <div>
+      {anecdotes[selected]}
+    </div>
+    <p>has {votes[selected]} votes</p>
+    <button onClick={() => setVote(addVote)}>vote</button>
+    <button onClick={() => setSelected(generateIndex)} >next anecdotes</button>
+  </div>
+)
+
+const MostVotes = ({targetAnecdote, mostVotes}) => {
+  if (mostVotes > 0) {
+    return (
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <div>{targetAnecdote}</div>
+        <p>has {mostVotes} votes</p>
+      </div>
+      )
+  }
+  return (
+    <div>
+      <h1>Anecdote with most votes</h1>
+      <p>No votes yet.</p>
+    </div>
+  )
+}
 
 const App = () => {
   const anecdotes = [
@@ -12,10 +43,22 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
-
+  const [votes, setVote] = useState(Array.apply(null, new Array(anecdotes.length)).map(Number.prototype.valueOf, 0));
+  const generateIndex = Math.floor(Math.random() * anecdotes.length);
+  const indexAnecdote = votes.indexOf(Math.max(...votes));
+  const targetAnecdote =  anecdotes[indexAnecdote];
+  const mostVotes = votes[indexAnecdote];
+  
+  const addVote = () => {
+    const copy = [...votes];
+    copy[selected] += 1;
+    return copy;
+  };
+  
   return (
     <div>
-      {anecdotes[selected]}
+      <Display anecdotes={anecdotes} selected={selected} setSelected={setSelected} votes={votes} setVote={setVote} generateIndex={generateIndex} addVote={addVote} />
+      <MostVotes targetAnecdote={targetAnecdote} mostVotes={mostVotes} />
     </div>
   )
 }
