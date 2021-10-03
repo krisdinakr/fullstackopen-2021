@@ -1,9 +1,10 @@
-const Notification = ({ message }) => {
-  if (!message) return null;
+const Notification = ({ notification }) => {
+  
+  if (!notification) return null;
 
   return (
-    <div className="notification">
-      <span>{message}</span>
+    <div className={`notification notification--${notification[0]}`}>
+      <span>{notification[1]}</span>
     </div>
   )
 }

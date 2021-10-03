@@ -18,10 +18,17 @@ code {
 
 .notification {
   background: lightgray;
-  color: green;
   border-style: solid;
   border-radius: 1rem;
   padding: .8rem;
   font-size: 1.5rem;
   margin-bottom: 1rem;
+}
+
+.notification--error {
+  color: red;
+}
+
+.notification--success {
+  color: green;
 }

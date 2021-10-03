@@ -33,7 +33,13 @@ const App = () => {
         personsService.update(checkDuplicate.id, newContactObj)
           .then(newContactObj => {
             setPersons(persons.map(person => person.id !== checkDuplicate.id ? person : newContactObj));
-            setNotification(`${newName}'s Number Updated`);
+            setNotification(['success', `${newName}'s Number Updated`])
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
+          })
+          .catch(err => {
+            setNotification(['error', `Information of ${newName} has already been removed from server`]);
             setTimeout(() => {
               setNotification(null);
             }, 5000);
@@ -43,12 +49,17 @@ const App = () => {
       personsService.create(newContactObj)
         .then(newContactObj => {
           setPersons(persons.concat(newContactObj));
-          setNotification(`Added ${newName}`);
+          setNotification(['success', `Added ${newName}`]);
           setTimeout(() => {
             setNotification(null);
           }, 5000);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          setNotification(['error', 'Add contact failed']);
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
+        })
     }
 
     setNewName('');
@@ -63,8 +74,17 @@ const App = () => {
         .then(() => {
           const newPersons = persons.filter(i => i !== contact);
           setPersons(newPersons);
+          setNotification(['success', `${contact.name} deleted from contact`]);
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          setNotification(['error', `Information of ${contact.name} has already been removed from server`]);
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000)
+        })
     } 
   }
 
@@ -73,7 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification notification={notification} />
       <Filter filter={filter} setFilter={setFilter} />
       <h2>add a new</h2>
       <PersonForm newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} addContact={addContact} />
