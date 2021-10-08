@@ -27,11 +27,36 @@ let persons = [
   }
 ];
 
+const generateId = () => Math.floor(Math.random() * 100);
+
 app.get('/api/persons', (req, res) => {
   if (persons.length < 1) {
     return res.status(200).send('No data');
   }
   return res.status(200).json(persons);
+})
+
+app.post('/api/persons', (req, res) => {
+  const { name, number } = req.body;
+  if (!name || !number) {
+    return res.status(400).json({ error: 'name or number is missing'})
+  }
+
+  const duplicate = persons.find(i => i.name.toLowerCase() === name.toLowerCase());
+
+  if (duplicate) {
+    return res.status(400).json({ error: 'name must be unique'});
+  }
+
+  const person = {
+    id: generateId(),
+    name,
+    number
+  }
+
+  persons = persons.concat(person);
+
+  return res.status(200).json(person);
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -42,6 +67,13 @@ app.get('/api/persons/:id', (req, res) => {
   }
 
   return res.status(200).json(person);
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const { id } = req.params;
+  persons = persons.filter(i => i.id !== Number(id));
+
+  res.status(204).end();
 })
 
 app.get('/info', (req, res) => {
