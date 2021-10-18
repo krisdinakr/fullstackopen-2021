@@ -55,7 +55,8 @@ const App = () => {
           }, 5000);
         })
         .catch(err => {
-          setNotification(['error', 'Add contact failed']);
+          console.log(err.response.data)
+          setNotification(['error', err.response.data.error]);
           setTimeout(() => {
             setNotification(null);
           }, 5000);
