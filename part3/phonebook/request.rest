@@ -1,0 +1,31 @@
+GET http://localhost:3001/info
+
+#####
+
+GET http://localhost:3001/api/persons
+
+####
+
+GET http://localhost:3001/api/persons/1
+
+####
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "iu",
+  "number": "12335433"
+}
+
+#### 
+DELETE http://localhost:3001/api/persons/1
+
+#### 
+PUT http://localhost:3001/api/persons/1
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "number": "39-44-5323523"
+}
