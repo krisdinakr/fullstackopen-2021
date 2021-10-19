@@ -41,5 +41,5 @@
     "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": "^7.14.5",
     "json-server": "^0.16.3"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "http://localhost:8000"
 }
