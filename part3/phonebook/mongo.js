@@ -7,7 +7,7 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2];
 
-const url = `mongodb+srv://fullstackopen:${password}@fso.out8k.mongodb.net/phonebook-app?retryWrites=true&w=majority`
+const url = `mongodb+srv://fullstackopen:${password}@fso.out8k.mongodb.net/phonebook-app?retryWrites=true&w=majority`;
 
 mongoose.connect(url);
 
@@ -23,19 +23,18 @@ const number = process.argv[4];
 
 const person = new Person({
   name,
-  number
+  number,
 });
 
-if (!name | !number) {
-  Person.find({}).then(result => {
+if (!name || !number) {
+  Person.find({}).then((result) => {
     console.log('phonebook:');
-    result.forEach(person => console.log(`${person.name} ${person.number}`));
+    result.forEach((item) => console.log(`${item.name} ${item.number}`));
     mongoose.connection.close();
-  })
+  });
 } else {
-  person.save().then(result => {
+  person.save().then((result) => {
     console.log(`added ${result.name} number ${result.number} to phonebook`);
     mongoose.connection.close();
-  })
+  });
 }
-
