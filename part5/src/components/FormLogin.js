@@ -1,29 +1,40 @@
-export const FormLogin = ({
-  handlerLogin,
-  username,
-  setUsername,
-  password,
-  setPassword,
-}) => (
-  <form onSubmit={handlerLogin}>
+import { useState } from 'react';
+
+export const FormLogin = ({ handlerLogin }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const login = (e) => {
+    e.preventDefault();
+    handlerLogin({ username, password });
+    setUsername('');
+    setPassword('');
+  };
+
+  return (
     <div>
-      username
-      <input
-        type="text"
-        name="username"
-        value={username}
-        onChange={({ target }) => setUsername(target.value)}
-      />
+      <h2>log in to application</h2>
+      <form onSubmit={login}>
+        <div>
+          username
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button>login</button>
+      </form>
     </div>
-    <div>
-      password
-      <input
-        type="password"
-        name="password"
-        value={password}
-        onChange={({ target }) => setPassword(target.value)}
-      />
-    </div>
-    <button>login</button>
-  </form>
-);
+  );
+};

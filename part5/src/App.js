@@ -1,17 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Blog, FormLogin, FormCreate, Notification } from './components';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import {
+  Blog,
+  FormLogin,
+  FormCreate,
+  Notification,
+  Toggable,
+} from './components';
 import { BaseService } from './services';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const blogFormRef = useRef();
 
   const getBlogList = useCallback(async () => {
     if (user) {
@@ -32,10 +34,9 @@ const App = () => {
     }
   }, []);
 
-  const handlerLogin = async (e) => {
-    e.preventDefault();
+  const handlerLogin = async (data) => {
     try {
-      const user = await BaseService.post('/api/login', { username, password });
+      const user = await BaseService.post('/api/login', data);
       setUser(user);
       window.localStorage.setItem('USER_LOGGED_IN', JSON.stringify(user));
     } catch (exception) {
@@ -44,8 +45,6 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
-    setUsername('');
-    setPassword('');
   };
 
   const handlerLogout = () => {
@@ -53,14 +52,9 @@ const App = () => {
     setUser(null);
   };
 
-  const handlerCreate = async (e) => {
-    e.preventDefault();
+  const handlerCreate = async (blogObj) => {
     try {
-      const result = await BaseService.post(
-        '/api/blogs',
-        { title, author, url },
-        user.token
-      );
+      const result = await BaseService.post('/api/blogs', blogObj, user.token);
       if (result.id) {
         setBlogs(blogs.concat(result));
         setSuccessMessage(
@@ -76,50 +70,42 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
-    setAuthor('');
-    setTitle('');
-    setUrl('');
+    blogFormRef.current.toggleVisibility();
   };
 
+  const loginForm = () => (
+    <div>
+      <FormLogin handlerLogin={handlerLogin} />
+    </div>
+  );
+
+  const blogForm = () => (
+    <Toggable buttonLabel="create new blog" ref={blogFormRef}>
+      <FormCreate handlerCreate={handlerCreate} />
+    </Toggable>
+  );
+
   return (
-    <>
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          <Notification type="error" message={errorMessage} />
-          <Notification message={successMessage} />
+    <div>
+      <h2>blogs</h2>
+      <Notification type="error" message={errorMessage} />
+      <Notification message={successMessage} />
+      {!user ? (
+        loginForm()
+      ) : (
+        <>
           <span>{user.username} logged-in</span>
           <button onClick={handlerLogout}>logout</button>
-          <h2>create new</h2>
-          <FormCreate
-            title={title}
-            setTitle={setTitle}
-            author={author}
-            setAuthor={setAuthor}
-            url={url}
-            setUrl={setUrl}
-            handlerCreate={handlerCreate}
-          />
+          {blogForm()}
           <br />
-          {blogs.map((blog) => (
-            <Blog blog={blog} key={blog.id} />
-          ))}
-        </div>
+          <section>
+            {blogs.map((blog) => (
+              <Blog blog={blog} key={blog.id} />
+            ))}
+          </section>
+        </>
       )}
-      {!user && (
-        <div>
-          <h2>log in to application</h2>
-          <Notification type="error" message={errorMessage} />
-          <FormLogin
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-            handlerLogin={handlerLogin}
-          />
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 
