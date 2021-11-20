@@ -62,4 +62,66 @@ export class BaseService {
         })
     );
   };
+
+  static put = (url, data, token) => {
+    axios.interceptors.request.use((config) => {
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+
+        return config;
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      axios
+        .put(url, data)
+        .then((response) => resolve(response.data))
+        .catch((error) => {
+          if (error.response) {
+            reject({
+              message: error.response.data,
+              code: error.response.status,
+              location: error.config.url,
+            });
+          } else if (error.request) {
+            reject(error.request);
+          } else {
+            reject(error.message);
+          }
+
+          reject(error.config);
+        });
+    });
+  };
+
+  static delete = (url, token) => {
+    axios.interceptors.request.use((config) => {
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+
+        return config;
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      axios
+        .delete(url)
+        .then((response) => resolve(response.data))
+        .catch((error) => {
+          if (error.response) {
+            reject({
+              message: error.response.data,
+              code: error.response.status,
+              location: error.config.url,
+            });
+          } else if (error.request) {
+            reject(error.request);
+          } else {
+            reject(error.message);
+          }
+
+          reject(error.config);
+        });
+    });
+  };
 }

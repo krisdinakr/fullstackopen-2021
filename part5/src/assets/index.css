@@ -16,6 +16,10 @@ code {
   padding: 0 .5rem;
 }
 
+button {
+  cursor: pointer;
+}
+
 .notification {
   color: green;
   background: lightgrey;
@@ -28,4 +32,51 @@ code {
 
 .error {
   color: red;
+}
+
+.blog {
+  border: 1px solid black;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.blog p {
+  margin: .5px 0;
+}
+
+.blog > div:first-child p:first-child {
+  display: inline-block;
+}
+
+.blog__btn-detail {
+  display: inline-block;
+}
+
+.blog__btn-remove {
+  background-color: dodgerblue;
+  border: none;
+  border-radius: 5px;
+  
+}
+
+.blog__btn-remove:hover {
+  opacity: .9;
+}
+
+.blog__detail {
+  transition: height 0ms 400ms, opacity 400ms 0ms;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  
+}
+
+.blog__detail.show {
+  height: auto;
+  opacity: 1;
+  transition: height 0ms 0ms, opacity 600ms 0ms;
+}
+
+.blog__detail p:nth-child(2) {
+  display: inline-block;
 }

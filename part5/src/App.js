@@ -18,6 +18,7 @@ const App = () => {
   const getBlogList = useCallback(async () => {
     if (user) {
       const blogList = await BaseService.get('/api/blogs', {}, user.token);
+      blogList.sort((a, b) => b.likes - a.likes);
       setBlogs(blogList);
     }
   }, [user]);
@@ -73,6 +74,39 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
   };
 
+  const handlerLike = async (blog) => {
+    try {
+      await BaseService.put(
+        `/api/blogs/${blog.id}`,
+        {
+          title: blog.title,
+          author: blog.author,
+          url: blog.url,
+          likes: blog.likes + 1,
+        },
+        user.token
+      );
+    } catch (exception) {
+      setErrorMessage(exception.message.error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const handlerRemove = async (id) => {
+    try {
+      await BaseService.delete(`/api/blogs/${id}`, user.token);
+      const blogListUpdated = blogs.filter((blog) => blog.id !== id);
+      setBlogs(blogListUpdated);
+    } catch (exception) {
+      setErrorMessage(exception.message.error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  }
+
   const loginForm = () => (
     <div>
       <FormLogin handlerLogin={handlerLogin} />
@@ -100,7 +134,7 @@ const App = () => {
           <br />
           <section>
             {blogs.map((blog) => (
-              <Blog blog={blog} key={blog.id} />
+              <Blog blog={blog} key={blog.id} handlerLike={handlerLike} handlerRemove={handlerRemove} />
             ))}
           </section>
         </>
