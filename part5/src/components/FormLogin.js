@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 export const FormLogin = ({ handlerLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const login = (e) => {
-    e.preventDefault();
-    handlerLogin({ username, password });
-    setUsername('');
-    setPassword('');
-  };
+    e.preventDefault()
+    handlerLogin({ username, password })
+    setUsername('')
+    setPassword('')
+  }
 
   return (
     <div>
@@ -36,5 +37,9 @@ export const FormLogin = ({ handlerLogin }) => {
         <button>login</button>
       </form>
     </div>
-  );
-};
+  )
+}
+
+FormLogin.propTypes = {
+  handlerLogin: PropTypes.func.isRequired
+}

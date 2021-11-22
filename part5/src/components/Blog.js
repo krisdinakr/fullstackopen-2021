@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 export const Blog = ({ blog, handlerLike, handlerRemove }) => {
-  const [show, setShow] = useState(false);
-  const [like, setLike] = useState(blog.likes);
-  const handlerDetail = () => setShow(!show);
+  const [show, setShow] = useState(false)
+  const [like, setLike] = useState(blog.likes)
+  const handlerDetail = () => setShow(!show)
 
   const addLike = (blog) => {
-    handlerLike(blog);
-    setLike(like + 1);
-  };
+    handlerLike(blog)
+    setLike(like + 1)
+  }
 
   const removeBlog = (id) => {
-    const confim = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
+    const confim = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     if (confim) {
       handlerRemove(id)
     }
@@ -37,5 +38,11 @@ export const Blog = ({ blog, handlerLike, handlerRemove }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handlerLike: PropTypes.func.isRequired,
+  handlerRemove: PropTypes.func.isRequired
+}

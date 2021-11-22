@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 export const FormCreate = ({ handlerCreate }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const addBlog = (e) => {
-    e.preventDefault();
-    handlerCreate({ title, author, url });
-    setAuthor('');
-    setTitle('');
-    setUrl('');
-  };
+    e.preventDefault()
+    handlerCreate({ title, author, url })
+    setAuthor('')
+    setTitle('')
+    setUrl('')
+  }
 
   return (
     <div>
@@ -50,5 +51,9 @@ export const FormCreate = ({ handlerCreate }) => {
         <button>create</button>
       </form>
     </div>
-  );
-};
+  )
+}
+
+FormCreate.propTypes = {
+  handlerCreate: PropTypes.func.isRequired
+}

@@ -1,78 +1,78 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Blog,
   FormLogin,
   FormCreate,
   Notification,
   Toggable,
-} from './components';
-import { BaseService } from './services';
+} from './components'
+import { BaseService } from './services'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const blogFormRef = useRef();
+  const [blogs, setBlogs] = useState([])
+  const [user, setUser] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
+  const blogFormRef = useRef()
 
   const getBlogList = useCallback(async () => {
     if (user) {
-      const blogList = await BaseService.get('/api/blogs', {}, user.token);
-      blogList.sort((a, b) => b.likes - a.likes);
-      setBlogs(blogList);
+      const blogList = await BaseService.get('/api/blogs', {}, user.token)
+      blogList.sort((a, b) => b.likes - a.likes)
+      setBlogs(blogList)
     }
-  }, [user]);
+  }, [user])
 
   useEffect(() => {
-    getBlogList();
-  }, [getBlogList, user]);
+    getBlogList()
+  }, [getBlogList, user])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('USER_LOGGED_IN');
+    const loggedUserJSON = window.localStorage.getItem('USER_LOGGED_IN')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
     }
-  }, []);
+  }, [])
 
   const handlerLogin = async (data) => {
     try {
-      const user = await BaseService.post('/api/login', data);
-      setUser(user);
-      window.localStorage.setItem('USER_LOGGED_IN', JSON.stringify(user));
+      const user = await BaseService.post('/api/login', data)
+      setUser(user)
+      window.localStorage.setItem('USER_LOGGED_IN', JSON.stringify(user))
     } catch (exception) {
-      setErrorMessage(exception.message.error);
+      setErrorMessage(exception.message.error)
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     }
-  };
+  }
 
   const handlerLogout = () => {
-    window.localStorage.clear();
-    setUser(null);
-  };
+    window.localStorage.clear()
+    setUser(null)
+  }
 
   const handlerCreate = async (blogObj) => {
     try {
-      const result = await BaseService.post('/api/blogs', blogObj, user.token);
+      const result = await BaseService.post('/api/blogs', blogObj, user.token)
       if (result.id) {
-        setBlogs(blogs.concat(result));
+        setBlogs(blogs.concat(result))
         setSuccessMessage(
           `a new blog ${result.title} by ${result.author} added`
-        );
+        )
         setTimeout(() => {
-          setSuccessMessage(null);
-        }, 5000);
+          setSuccessMessage(null)
+        }, 5000)
       }
     } catch (exception) {
-      setErrorMessage(exception.message.error);
+      setErrorMessage(exception.message.error)
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     }
-    blogFormRef.current.toggleVisibility();
-  };
+    blogFormRef.current.toggleVisibility()
+  }
 
   const handlerLike = async (blog) => {
     try {
@@ -85,25 +85,25 @@ const App = () => {
           likes: blog.likes + 1,
         },
         user.token
-      );
+      )
     } catch (exception) {
-      setErrorMessage(exception.message.error);
+      setErrorMessage(exception.message.error)
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     }
-  };
+  }
 
   const handlerRemove = async (id) => {
     try {
-      await BaseService.delete(`/api/blogs/${id}`, user.token);
-      const blogListUpdated = blogs.filter((blog) => blog.id !== id);
-      setBlogs(blogListUpdated);
+      await BaseService.delete(`/api/blogs/${id}`, user.token)
+      const blogListUpdated = blogs.filter((blog) => blog.id !== id)
+      setBlogs(blogListUpdated)
     } catch (exception) {
-      setErrorMessage(exception.message.error);
+      setErrorMessage(exception.message.error)
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -111,13 +111,13 @@ const App = () => {
     <div>
       <FormLogin handlerLogin={handlerLogin} />
     </div>
-  );
+  )
 
   const blogForm = () => (
     <Toggable buttonLabel="create new blog" ref={blogFormRef}>
       <FormCreate handlerCreate={handlerCreate} />
     </Toggable>
-  );
+  )
 
   return (
     <div>
@@ -140,7 +140,7 @@ const App = () => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

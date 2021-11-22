@@ -1,14 +1,14 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export class BaseService {
-  static get = (url, params, token) => {
+  static get(url, params, token) {
     axios.interceptors.request.use((config) => {
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`
       }
 
-      return config;
-    });
+      return config
+    })
 
     return new Promise((resolve, reject) =>
       axios
@@ -20,26 +20,26 @@ export class BaseService {
               message: error.response.data,
               code: error.response.status,
               location: error.config.url,
-            });
+            })
           } else if (error.request) {
-            reject(error.request);
+            reject(error.request)
           } else {
-            reject(error.message);
+            reject(error.message)
           }
 
-          reject(error.config);
+          reject(error.config)
         })
-    );
-  };
+    )
+  }
 
-  static post = (url, data, token) => {
+  static post(url, data, token) {
     axios.interceptors.request.use((config) => {
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`
       }
 
-      return config;
-    });
+      return config
+    })
 
     return new Promise((resolve, reject) =>
       axios
@@ -51,26 +51,26 @@ export class BaseService {
               message: error.response.data,
               code: error.response.status,
               location: error.config.url,
-            });
+            })
           } else if (error.request) {
-            reject(error.request);
+            reject(error.request)
           } else {
-            reject(error.message);
+            reject(error.message)
           }
 
-          reject(error.config);
+          reject(error.config)
         })
-    );
-  };
+    )
+  }
 
-  static put = (url, data, token) => {
+  static put(url, data, token) {
     axios.interceptors.request.use((config) => {
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`
 
-        return config;
+        return config
       }
-    });
+    })
 
     return new Promise((resolve, reject) => {
       axios
@@ -82,26 +82,26 @@ export class BaseService {
               message: error.response.data,
               code: error.response.status,
               location: error.config.url,
-            });
+            })
           } else if (error.request) {
-            reject(error.request);
+            reject(error.request)
           } else {
-            reject(error.message);
+            reject(error.message)
           }
 
-          reject(error.config);
-        });
-    });
-  };
+          reject(error.config)
+        })
+    })
+  }
 
-  static delete = (url, token) => {
+  static delete(url, token) {
     axios.interceptors.request.use((config) => {
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`
 
-        return config;
+        return config
       }
-    });
+    })
 
     return new Promise((resolve, reject) => {
       axios
@@ -113,15 +113,15 @@ export class BaseService {
               message: error.response.data,
               code: error.response.status,
               location: error.config.url,
-            });
+            })
           } else if (error.request) {
-            reject(error.request);
+            reject(error.request)
           } else {
-            reject(error.message);
+            reject(error.message)
           }
 
-          reject(error.config);
-        });
-    });
-  };
+          reject(error.config)
+        })
+    })
+  }
 }
