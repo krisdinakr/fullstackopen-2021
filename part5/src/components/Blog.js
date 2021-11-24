@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 export const Blog = ({ blog, handlerLike, handlerRemove }) => {
-  const [show, setShow] = useState(false)
+  const [visible, setVisible] = useState(false)
   const [like, setLike] = useState(blog.likes)
-  const handlerDetail = () => setShow(!show)
+  const handlerDetail = () => setVisible(!visible)
 
   const addLike = (blog) => {
     handlerLike(blog)
@@ -23,20 +23,22 @@ export const Blog = ({ blog, handlerLike, handlerRemove }) => {
       <div>
         <p>{blog.title} {blog.author}</p>{' '}
         <button className="blog__btn-detail" onClick={handlerDetail}>
-          {show ? 'hide' : 'show'}
+          {visible ? 'hide' : 'show'}
         </button>
       </div>
-      <div className={show ? 'blog__detail show' : 'blog__detail'}>
-        <p>{blog.url}</p>
-        <p>likes {like}</p> <button onClick={() => addLike(blog)}>like</button>
-        <p>{blog.user.username}</p>
-        <button
-          onClick={() => removeBlog(blog.id)}
-          className="blog__btn-remove"
-        >
-          remove
-        </button>
-      </div>
+      {visible && (
+        <div className="blog__detail" >
+          <p>{blog.url}</p>
+          <p>likes {like}</p> <button onClick={() => addLike(blog)}>like</button>
+          <p>{blog.user.username}</p>
+          <button
+            onClick={() => removeBlog(blog.id)}
+            className="blog__btn-remove"
+          >
+            remove
+          </button>
+        </div>
+      )}
     </div>
   )
 }
