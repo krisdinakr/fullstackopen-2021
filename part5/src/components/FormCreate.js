@@ -51,7 +51,7 @@ export const FormCreate = ({ handlerCreate }) => {
             required
           />
         </div>
-        <button>create</button>
+        <button id="create-button">create</button>
       </form>
     </div>
   )

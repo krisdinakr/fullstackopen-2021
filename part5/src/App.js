@@ -18,7 +18,7 @@ const App = () => {
   const getBlogList = useCallback(async () => {
     if (user) {
       const blogList = await BaseService.get('/api/blogs', {}, user.token)
-      blogList.sort((a, b) => b.likes - a.likes)
+      // blogList.sort((a, b) => b.likes - a.likes)
       setBlogs(blogList)
     }
   }, [user])
@@ -92,6 +92,11 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+
+    const newBlogList = blogs.map((currentBlog) => {
+      return currentBlog.id === blog.id ? { ...currentBlog, likes: currentBlog.likes + 1 } : currentBlog
+    })
+    setBlogs(newBlogList)
   }
 
   const handlerRemove = async (id) => {
@@ -128,14 +133,16 @@ const App = () => {
         loginForm()
       ) : (
         <>
-          <span>{user.username} logged-in</span>
-          <button onClick={handlerLogout}>logout</button>
+          <span>{user.name} logged-in</span>
+          <button id="logout-button" onClick={handlerLogout}>logout</button>
           {blogForm()}
           <br />
           <section>
-            {blogs.map((blog) => (
-              <Blog blog={blog} key={blog.id} handlerLike={handlerLike} handlerRemove={handlerRemove} />
-            ))}
+            {blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map((blog) => (
+                <Blog blog={blog} key={blog.id} handlerLike={handlerLike} handlerRemove={handlerRemove} />
+              ))}
           </section>
         </>
       )}

@@ -3,13 +3,9 @@ import PropTypes from 'prop-types'
 
 export const Blog = ({ blog, handlerLike, handlerRemove }) => {
   const [visible, setVisible] = useState(false)
-  const [like, setLike] = useState(blog.likes)
   const handlerDetail = () => setVisible(!visible)
 
-  const addLike = (blog) => {
-    handlerLike(blog)
-    setLike(like + 1)
-  }
+  const addLike = (blog) => handlerLike(blog)
 
   const removeBlog = (id) => {
     const confim = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
@@ -29,7 +25,7 @@ export const Blog = ({ blog, handlerLike, handlerRemove }) => {
       {visible && (
         <div className="blog__detail" >
           <p>{blog.url}</p>
-          <p>likes {like}</p> <button onClick={() => addLike(blog)}>like</button>
+          <p>likes {blog.likes}</p> <button className="blog__btn-like" onClick={() => addLike(blog)}>like</button>
           <p>{blog.user.username}</p>
           <button
             onClick={() => removeBlog(blog.id)}

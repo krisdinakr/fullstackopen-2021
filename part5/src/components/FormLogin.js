@@ -21,6 +21,7 @@ export const FormLogin = ({ handlerLogin }) => {
           <input
             type="text"
             name="username"
+            id="username"
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
@@ -30,11 +31,12 @@ export const FormLogin = ({ handlerLogin }) => {
           <input
             type="password"
             name="password"
+            id="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button>login</button>
+        <button id="login-button">login</button>
       </form>
     </div>
   )
