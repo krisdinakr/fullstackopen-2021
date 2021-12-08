@@ -11,23 +11,27 @@ const notificationReducer = (state = null, action) => {
   }
 }
 
+let timer = 0
+
 export const votedNotification = (data, timeout) => {
-  return dispatch => {
+  return async dispatch => {
+    clearTimeout(timer)
     dispatch({
       type: 'VOTED',
       data
     })
-    setTimeout(() => dispatch(resetNotification()), timeout)
+    timer = setTimeout(() => dispatch(resetNotification()), timeout)
   }
 }
 
 export const createdNotification = (anecdote, timeout) => {
-  return dispatch => {
+  return async dispatch => {
+    clearTimeout(timer)
     dispatch({
       type: 'CREATED',
       anecdote
     })
-    setTimeout(() => dispatch(resetNotification()), timeout)
+    timer = setTimeout(() => dispatch(resetNotification()), timeout)
   }
 }
 
