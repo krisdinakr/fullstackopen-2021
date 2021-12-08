@@ -11,17 +11,23 @@ const notificationReducer = (state = null, action) => {
   }
 }
 
-export const votedNotification = (data) => {
-  return {
-    type: 'VOTED',
-    data
+export const votedNotification = (data, timeout) => {
+  return dispatch => {
+    dispatch({
+      type: 'VOTED',
+      data
+    })
+    setTimeout(() => dispatch(resetNotification()), timeout)
   }
 }
 
-export const createdNotification = (anecdote) => {
-  return {
-    type: 'CREATED',
-    anecdote
+export const createdNotification = (anecdote, timeout) => {
+  return dispatch => {
+    dispatch({
+      type: 'CREATED',
+      anecdote
+    })
+    setTimeout(() => dispatch(resetNotification()), timeout)
   }
 }
 

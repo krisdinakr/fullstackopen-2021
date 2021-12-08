@@ -2,12 +2,12 @@
   "anecdotes": [
     {
       "content": "If it hurts, do it more often",
-      "votes": 0,
+      "votes": 2,
       "id": 1
     },
     {
       "content": "Adding manpower to a late software project makes it later!",
-      "votes": 0,
+      "votes": 1,
       "id": 2
     },
     {
@@ -27,13 +27,18 @@
     },
     {
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-      "votes": 0,
+      "votes": 1,
       "id": 6
     },
     {
       "content": "this anecdote store in redux with back end",
-      "votes": 0,
+      "votes": 1,
       "id": "18484"
+    },
+    {
+      "content": "practice makes perfect, they say",
+      "votes": 0,
+      "id": "57678"
     }
   ]
 }
