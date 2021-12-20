@@ -1,0 +1,43 @@
+GET http://localhost:3001/api/blogs
+
+####
+
+GET http://localhost:3001/api/blogs/617a10c7b50e629b779ab851
+
+####
+
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "hello",
+  "author": "test",
+  "url": "google.com"
+}
+
+#### 
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "johnnysuh",
+  "name": "Johnny",
+  "password": "hellow",
+  "blogs": []
+}
+
+####
+
+GET http://localhost:3001/api/users
+
+
+####
+
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "johnnysuh",
+  "password": "hellow"
+}
