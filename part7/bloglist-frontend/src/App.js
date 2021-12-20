@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useEffect, useCallback, useRef } from 'react'
 import {
   Blog,
   FormLogin,
@@ -6,20 +6,21 @@ import {
   Notification,
   Toggable,
 } from './components'
+import { useDispatch, useSelector } from 'react-redux'
 import { BaseService } from './services'
+import { initializedUser, loginAction, logoutAction } from './reducers/userReducer'
+import { initializedBlogs } from './reducers/blogReducer'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
+  const user = useSelector(({ user }) => user)
+  const blogs = useSelector(({ blogs }) => blogs)
 
   const getBlogList = useCallback(async () => {
     if (user) {
-      const blogList = await BaseService.get('/api/blogs', {}, user.token)
-      // blogList.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogList)
+      await dispatch(initializedBlogs(user.token))
     }
   }, [user])
 
@@ -28,51 +29,42 @@ const App = () => {
   }, [getBlogList, user])
 
   useEffect(() => {
+    if (user) {
+      window.localStorage.setItem('USER_LOGGED_IN', JSON.stringify(user))
+    }
+  }, [user])
+
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('USER_LOGGED_IN')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(initializedUser(user))
     }
   }, [])
 
   const handlerLogin = async (data) => {
     try {
-      const user = await BaseService.post('/api/login', data)
-      setUser(user)
-      window.localStorage.setItem('USER_LOGGED_IN', JSON.stringify(user))
+      await dispatch(loginAction(data))
     } catch (exception) {
-      setErrorMessage(exception.message.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      console.log('err', exception)
+      dispatch(setNotification(exception.message.error, 'error'))
     }
   }
 
   const handlerLogout = () => {
     window.localStorage.clear()
-    setUser(null)
+    dispatch(logoutAction())
   }
 
-  const handlerCreate = async (blogObj) => {
-    try {
-      const result = await BaseService.post('/api/blogs', blogObj, user.token)
-      if (result.id) {
-        setBlogs(blogs.concat(result))
-        setSuccessMessage(
-          `a new blog ${result.title} by ${result.author} added`
-        )
-        setTimeout(() => {
-          setSuccessMessage(null)
-        }, 5000)
-      }
-    } catch (exception) {
-      setErrorMessage(exception.message.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    blogFormRef.current.toggleVisibility()
-  }
+  // const handlerCreate = async (blogObj) => {
+  //   try {
+  //     await dispatch(createBlog(blogObj, user.token))
+  //     dispatch(setNotification(`a new blog ${blogObj.title} by ${blogObj.author} added`, 'success'))
+  //   } catch (exception) {
+  //     dispatch(setNotification(exception.message.error, 'error'))
+  //   }
+  //   blogFormRef.current.toggleVisibility()
+  // }
 
   const handlerLike = async (blog) => {
     try {
@@ -87,28 +79,17 @@ const App = () => {
         user.token
       )
     } catch (exception) {
-      setErrorMessage(exception.message.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification(exception.message.error, 'error'))
     }
-
-    const newBlogList = blogs.map((currentBlog) => {
-      return currentBlog.id === blog.id ? { ...currentBlog, likes: currentBlog.likes + 1 } : currentBlog
-    })
-    setBlogs(newBlogList)
   }
 
   const handlerRemove = async (id) => {
     try {
       await BaseService.delete(`/api/blogs/${id}`, user.token)
-      const blogListUpdated = blogs.filter((blog) => blog.id !== id)
-      setBlogs(blogListUpdated)
+      // const blogListUpdated = blogs.filter((blog) => blog.id !== id)
+      // setBlogs(blogListUpdated)
     } catch (exception) {
-      setErrorMessage(exception.message.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification(exception.message.error, 'error'))
     }
   }
 
@@ -120,15 +101,14 @@ const App = () => {
 
   const blogForm = () => (
     <Toggable buttonLabel="create new blog" ref={blogFormRef}>
-      <FormCreate handlerCreate={handlerCreate} />
+      <FormCreate />
     </Toggable>
   )
 
   return (
     <div>
       <h2>blogs</h2>
-      <Notification type="error" message={errorMessage} />
-      <Notification message={successMessage} />
+      <Notification />
       {!user ? (
         loginForm()
       ) : (

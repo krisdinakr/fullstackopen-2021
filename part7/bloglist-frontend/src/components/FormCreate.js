@@ -1,14 +1,24 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
-export const FormCreate = ({ handlerCreate }) => {
+export const FormCreate = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const dispatch = useDispatch()
+  const user = useSelector(({ user }) => user)
 
-  const addBlog = (e) => {
+  const addBlog = async (e) => {
     e.preventDefault()
-    handlerCreate({ title, author, url })
+    try {
+      await dispatch(createBlog({ title, author, url }, user.token))
+      dispatch(setNotification(`a new blog ${title} by ${author} added`, 'success'))
+    } catch (exception) {
+      dispatch(setNotification(exception.message.error, 'error'))
+    }
     setAuthor('')
     setTitle('')
     setUrl('')
@@ -55,8 +65,4 @@ export const FormCreate = ({ handlerCreate }) => {
       </form>
     </div>
   )
-}
-
-FormCreate.propTypes = {
-  handlerCreate: PropTypes.func.isRequired
 }
