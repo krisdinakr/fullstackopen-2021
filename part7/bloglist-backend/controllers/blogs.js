@@ -112,4 +112,27 @@ blogRouter.patch('/:id', async (req, res, next) => {
   }
 });
 
+blogRouter.get('/:id/comments', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const comments = await Blog.findById(id, 'comments');
+    return res.status(200).json(comments);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+blogRouter.post('/:id/comments', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { comment } = req.body;
+    const comments = await Blog.findByIdAndUpdate(id, {
+      $push: { comments: comment },
+    }, { new: true });
+    return res.status(201).json(comments);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = blogRouter;

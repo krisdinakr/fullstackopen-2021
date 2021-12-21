@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { likeBlog } from '../reducers/blogReducer'
+import { addCommentBlog, likeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 export const Blog = () => {
@@ -18,6 +18,20 @@ export const Blog = () => {
     }
   }
 
+  const addComment = async (e) => {
+    e.preventDefault()
+    try {
+      const data = {
+        id: blog.id,
+        comment: e.target.comment.value
+      }
+      await dispatch(addCommentBlog(data, user.token))
+    } catch (exception) {
+      dispatch(setNotification(exception.message.error, 'error'))
+    }
+    e.target.comment.value = ''
+  }
+
   if (!blog) return null
 
   return (
@@ -30,6 +44,18 @@ export const Blog = () => {
         <button onClick={() => addLike(blog)}>like</button>
       </div>
       <p>added by {blog.user.name}</p>
+
+      <p><b>comments</b></p>
+      <form onSubmit={addComment}>
+        <input type="text" name='comment' />
+        <button>add comment</button>
+      </form>
+      {!blog.comments.length && <p>no comment</p>}
+      <ul>
+        {blog.comments.map((comment, index) => (
+          <li key={`${blog.id}-${index}`}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }
