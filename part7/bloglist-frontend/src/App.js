@@ -1,9 +1,9 @@
 import React, { useEffect, useCallback } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Notification, FormLogin } from './components'
+import { Notification, FormLogin, Navbar } from './components'
 import { Blog, Home, User, Users } from './pages'
-import { initializedUser, loginAction, logoutAction } from './reducers/userReducer'
+import { initializedUser, loginAction } from './reducers/userReducer'
 import { initializedBlogs } from './reducers/blogReducer'
 import { initializedUsers } from './reducers/usersReducer'
 import { setNotification } from './reducers/notificationReducer'
@@ -37,11 +37,6 @@ const App = () => {
     }
   }, [])
 
-  const handlerLogout = () => {
-    window.localStorage.clear()
-    dispatch(logoutAction())
-  }
-
   const handlerLogin = async (data) => {
     try {
       await dispatch(loginAction(data))
@@ -53,16 +48,18 @@ const App = () => {
   return (
     <Router>
       <div>
-        <h2>blogs</h2>
-        <Notification />
         {!user && (
-          <FormLogin handlerLogin={handlerLogin} />
+          <>
+            <Notification />
+            <FormLogin handlerLogin={handlerLogin} />
+          </>
         )
         }
         {user && (
           <>
-            <p>{user.name} logged-in</p>
-            <button id="logout-button" onClick={handlerLogout}>logout</button>
+            <Navbar user={user} />
+            <h2>blogs app</h2>
+            <Notification />
           </>
         )}
         <Routes>
