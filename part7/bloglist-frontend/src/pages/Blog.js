@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { likeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import { useSelector } from 'react-redux'
 
-export const Blog = ({ blog }) => {
-  const [visible, setVisible] = useState(false)
-  const handlerDetail = () => setVisible(!visible)
+export const Blog = () => {
   const dispatch = useDispatch()
+  const { id } = useParams()
   const user = useSelector(({ user }) => user)
+  const blog = useSelector(({ blogs }) => blogs.find(blog => blog.id === id))
 
   const addLike = async (blog) => {
     try {
@@ -19,42 +18,18 @@ export const Blog = ({ blog }) => {
     }
   }
 
-  const removeBlog = async (id) => {
-    const confim = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
-    if (confim) {
-      try {
-        await dispatch(deleteBlog(id, user.token))
-      } catch (exception) {
-        dispatch(setNotification(exception.message.error, 'error'))
-      }
-    }
-  }
+  if (!blog) return null
 
   return (
-    <div className="blog">
-      <div>
-        <p>{blog.title} {blog.author}</p>{' '}
-        <button className="blog__btn-detail" onClick={handlerDetail}>
-          {visible ? 'hide' : 'show'}
-        </button>
+    <div>
+      <h2>{blog.title} {blog.author}</h2>
+      <p>
+        <a href={blog.url}>{blog.url}</a>
+      </p>
+      <div>{blog.likes} likes
+        <button onClick={() => addLike(blog)}>like</button>
       </div>
-      {visible && (
-        <div className="blog__detail" >
-          <p>{blog.url}</p>
-          <p>likes {blog.likes}</p> <button className="blog__btn-like" onClick={() => addLike(blog)}>like</button>
-          <p>{blog.user.username}</p>
-          <button
-            onClick={() => removeBlog(blog.id)}
-            className="blog__btn-remove"
-          >
-            remove
-          </button>
-        </div>
-      )}
+      <p>added by {blog.user.name}</p>
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
 }

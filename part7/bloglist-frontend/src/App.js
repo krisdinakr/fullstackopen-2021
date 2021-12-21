@@ -1,11 +1,12 @@
 import React, { useEffect, useCallback } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Notification } from './components'
-import { initializedUser } from './reducers/userReducer'
+import { Notification, FormLogin } from './components'
+import { Blog, Home, User, Users } from './pages'
+import { initializedUser, loginAction, logoutAction } from './reducers/userReducer'
 import { initializedBlogs } from './reducers/blogReducer'
 import { initializedUsers } from './reducers/usersReducer'
-import { Home, User, Users } from './pages'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -36,15 +37,39 @@ const App = () => {
     }
   }, [])
 
+  const handlerLogout = () => {
+    window.localStorage.clear()
+    dispatch(logoutAction())
+  }
+
+  const handlerLogin = async (data) => {
+    try {
+      await dispatch(loginAction(data))
+    } catch (exception) {
+      dispatch(setNotification(exception.message.error, 'error'))
+    }
+  }
+
   return (
     <Router>
       <div>
         <h2>blogs</h2>
         <Notification />
+        {!user && (
+          <FormLogin handlerLogin={handlerLogin} />
+        )
+        }
+        {user && (
+          <>
+            <p>{user.name} logged-in</p>
+            <button id="logout-button" onClick={handlerLogout}>logout</button>
+          </>
+        )}
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/users" element={<Users />} />
           <Route exact path="/users/:id" element={<User />} />
+          <Route exact path="/blogs/:id" element={<Blog />} />
         </Routes>
       </div>
     </Router>

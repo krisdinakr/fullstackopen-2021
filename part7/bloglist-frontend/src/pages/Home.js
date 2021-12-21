@@ -1,29 +1,12 @@
 import React, { useRef } from 'react'
-import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { Blog } from './index'
-import { FormCreate, FormLogin, Toggable } from '../components'
-import { setNotification } from '../reducers/notificationReducer'
-import { loginAction, logoutAction } from '../reducers/userReducer'
+import { Link } from 'react-router-dom'
+import { FormCreate, Toggable } from '../components'
 
 export const Home = () => {
   const blogFormRef = useRef()
   const user = useSelector(({ user }) => user)
-  const dispatch = useDispatch()
   const blogs = useSelector(({ blogs }) => blogs)
-
-  const handlerLogin = async (data) => {
-    try {
-      await dispatch(loginAction(data))
-    } catch (exception) {
-      dispatch(setNotification(exception.message.error, 'error'))
-    }
-  }
-
-  const handlerLogout = () => {
-    window.localStorage.clear()
-    dispatch(logoutAction())
-  }
 
   const blogForm = () => (
     <Toggable buttonLabel="create new blog" ref={blogFormRef}>
@@ -31,27 +14,19 @@ export const Home = () => {
     </Toggable>
   )
 
-  if (!user) {
-    return (
-      <div className="home">
-        <FormLogin handlerLogin={handlerLogin} />
-      </div>
-    )
-  }
+  if (!user) return null
 
   return (
     <div className="home">
-      <span>{user.name} logged-in</span>
-      <button id="logout-button" onClick={handlerLogout}>logout</button>
       {blogForm()}
       <br />
-      <section>
-        {blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map((blog) => (
-            <Blog blog={blog} key={blog.id} />
-          ))}
-      </section>
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <div className='blog' key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </div>
+        ))}
     </div>
   )
 }
