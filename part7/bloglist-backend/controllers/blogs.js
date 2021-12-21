@@ -94,4 +94,22 @@ blogRouter.put('/:id', async (req, res, next) => {
   }
 });
 
+blogRouter.patch('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const {
+      title, author, url, likes,
+    } = req.body;
+
+    const updatedBlog = await Blog.findByIdAndUpdate(id, {
+      title, author, url, likes,
+    }, { new: true });
+
+    if (!updatedBlog) return res.status(400).end();
+    return res.status(200).json(updatedBlog);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = blogRouter;
