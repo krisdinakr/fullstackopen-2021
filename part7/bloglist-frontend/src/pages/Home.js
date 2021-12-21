@@ -1,7 +1,8 @@
 import React, { useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { Blog, FormCreate, FormLogin, Toggable } from '.'
+import { Blog } from './index'
+import { FormCreate, FormLogin, Toggable } from '../components'
 import { setNotification } from '../reducers/notificationReducer'
 import { loginAction, logoutAction } from '../reducers/userReducer'
 

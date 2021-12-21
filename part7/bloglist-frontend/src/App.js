@@ -1,12 +1,11 @@
 import React, { useEffect, useCallback } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { Notification, Users } from './components'
 import { useDispatch, useSelector } from 'react-redux'
+import { Notification } from './components'
 import { initializedUser } from './reducers/userReducer'
 import { initializedBlogs } from './reducers/blogReducer'
 import { initializedUsers } from './reducers/usersReducer'
-import { Home } from './components/Home'
-import { User } from './components/User'
+import { Home, User, Users } from './pages'
 
 const App = () => {
   const dispatch = useDispatch()
