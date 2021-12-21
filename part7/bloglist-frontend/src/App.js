@@ -7,7 +7,6 @@ import {
   Toggable,
 } from './components'
 import { useDispatch, useSelector } from 'react-redux'
-import { BaseService } from './services'
 import { initializedUser, loginAction, logoutAction } from './reducers/userReducer'
 import { initializedBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
@@ -56,43 +55,6 @@ const App = () => {
     dispatch(logoutAction())
   }
 
-  // const handlerCreate = async (blogObj) => {
-  //   try {
-  //     await dispatch(createBlog(blogObj, user.token))
-  //     dispatch(setNotification(`a new blog ${blogObj.title} by ${blogObj.author} added`, 'success'))
-  //   } catch (exception) {
-  //     dispatch(setNotification(exception.message.error, 'error'))
-  //   }
-  //   blogFormRef.current.toggleVisibility()
-  // }
-
-  const handlerLike = async (blog) => {
-    try {
-      await BaseService.put(
-        `/api/blogs/${blog.id}`,
-        {
-          title: blog.title,
-          author: blog.author,
-          url: blog.url,
-          likes: blog.likes + 1,
-        },
-        user.token
-      )
-    } catch (exception) {
-      dispatch(setNotification(exception.message.error, 'error'))
-    }
-  }
-
-  const handlerRemove = async (id) => {
-    try {
-      await BaseService.delete(`/api/blogs/${id}`, user.token)
-      // const blogListUpdated = blogs.filter((blog) => blog.id !== id)
-      // setBlogs(blogListUpdated)
-    } catch (exception) {
-      dispatch(setNotification(exception.message.error, 'error'))
-    }
-  }
-
   const loginForm = () => (
     <div>
       <FormLogin handlerLogin={handlerLogin} />
@@ -121,7 +83,7 @@ const App = () => {
             {blogs
               .sort((a, b) => b.likes - a.likes)
               .map((blog) => (
-                <Blog blog={blog} key={blog.id} handlerLike={handlerLike} handlerRemove={handlerRemove} />
+                <Blog blog={blog} key={blog.id} />
               ))}
           </section>
         </>

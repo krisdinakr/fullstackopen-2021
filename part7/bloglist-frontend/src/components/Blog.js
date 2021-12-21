@@ -1,22 +1,32 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-// import { useDispatch } from 'react-redux'
-// import { likeBlog } from '../reducers/blogReducer'
-// import { setNotification } from '../reducers/notificationReducer'
-// import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
-export const Blog = ({ blog, handlerLike, handlerRemove }) => {
+export const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
   const handlerDetail = () => setVisible(!visible)
-  // const dispatch = useDispatch()
-  // const user = useSelector(({ user }) => user)
+  const dispatch = useDispatch()
+  const user = useSelector(({ user }) => user)
 
-  const addLike = (blog) => handlerLike(blog)
+  const addLike = async (blog) => {
+    try {
+      await dispatch(likeBlog(blog, user.token))
+    } catch (exception) {
+      dispatch(setNotification(exception.message.error, 'error'))
+    }
+  }
 
-  const removeBlog = (id) => {
+  const removeBlog = async (id) => {
     const confim = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     if (confim) {
-      handlerRemove(id)
+      try {
+        await dispatch(deleteBlog(id, user.token))
+      } catch (exception) {
+        dispatch(setNotification(exception.message.error, 'error'))
+      }
     }
   }
 
@@ -47,6 +57,4 @@ export const Blog = ({ blog, handlerLike, handlerRemove }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  handlerLike: PropTypes.func.isRequired,
-  handlerRemove: PropTypes.func.isRequired
 }
