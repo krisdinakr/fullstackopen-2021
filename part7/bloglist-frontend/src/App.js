@@ -1,21 +1,14 @@
-import React, { useEffect, useCallback, useRef } from 'react'
-import {
-  Blog,
-  FormLogin,
-  FormCreate,
-  Notification,
-  Toggable,
-} from './components'
+import React, { useEffect, useCallback } from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Notification, Users } from './components'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializedUser, loginAction, logoutAction } from './reducers/userReducer'
+import { initializedUser } from './reducers/userReducer'
 import { initializedBlogs } from './reducers/blogReducer'
-import { setNotification } from './reducers/notificationReducer'
+import { Home } from './components/Home'
 
 const App = () => {
-  const blogFormRef = useRef()
   const dispatch = useDispatch()
   const user = useSelector(({ user }) => user)
-  const blogs = useSelector(({ blogs }) => blogs)
 
   const getBlogList = useCallback(async () => {
     if (user) {
@@ -41,54 +34,17 @@ const App = () => {
     }
   }, [])
 
-  const handlerLogin = async (data) => {
-    try {
-      await dispatch(loginAction(data))
-    } catch (exception) {
-      console.log('err', exception)
-      dispatch(setNotification(exception.message.error, 'error'))
-    }
-  }
-
-  const handlerLogout = () => {
-    window.localStorage.clear()
-    dispatch(logoutAction())
-  }
-
-  const loginForm = () => (
-    <div>
-      <FormLogin handlerLogin={handlerLogin} />
-    </div>
-  )
-
-  const blogForm = () => (
-    <Toggable buttonLabel="create new blog" ref={blogFormRef}>
-      <FormCreate />
-    </Toggable>
-  )
-
   return (
-    <div>
-      <h2>blogs</h2>
-      <Notification />
-      {!user ? (
-        loginForm()
-      ) : (
-        <>
-          <span>{user.name} logged-in</span>
-          <button id="logout-button" onClick={handlerLogout}>logout</button>
-          {blogForm()}
-          <br />
-          <section>
-            {blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog blog={blog} key={blog.id} />
-              ))}
-          </section>
-        </>
-      )}
-    </div>
+    <Router>
+      <div>
+        <h2>blogs</h2>
+        <Notification />
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/users" element={<Users />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 
